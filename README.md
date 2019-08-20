@@ -79,7 +79,8 @@ func SomeErrMethod() error {
 }
 
 func SomeMethod() error {
-    // some error returned from another call as err
+    err := SomeErrMethod()
+
     return errors.Wrap(err)
 }
 
