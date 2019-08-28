@@ -30,6 +30,8 @@ Indicates that a parameter provided is not in the correct format or not present 
 This error allows to set a property that is related to the error and also add sub validation errors to build a validation error chain.  
 *This error usually translates to a HTTP **422 Unprocessable Entity** error.*
 
+> **Note:** All error constructors return a wrapped version of the error, removing the need to always pair an error constructor with a call to `errors.Wrap`.
+
 ## Error Wrapping
 
 This provides error bubbling tracking and other utility methods to work with wrapped errors.
@@ -77,7 +79,8 @@ func SomeErrMethod() error {
 }
 
 func SomeMethod() error {
-    // some error returned from another call as err
+    err := SomeErrMethod()
+
     return errors.Wrap(err)
 }
 
