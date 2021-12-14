@@ -100,7 +100,14 @@ Same as `Wrap` but accepts a format string
 ```go
 response := service.MakeHttpRequest()
 if response.StatusCode != http.StatusOK {
-  return errors.Wrapf("unexpected http response status. expected %d but got %d", http.StatusOK, response.StatusCode)
+  return errors.Wrapf(`
+    unexpected http response status.
+    expected: %d
+    got: %d
+  `,
+    http.StatusOK,
+    response.StatusCode,
+  )
 }
 ```
 
@@ -123,14 +130,7 @@ if originalErr == sql.ErrNoRows {
 
 Checks if two errors are the same
 
-**Example:**
-
-```go
-err := service.MakeHttpRequest()
-if err != nil {
-  return errors.W
-}
-```
+**Example**
 
 ```go
 err := f()
@@ -151,14 +151,7 @@ errors.GetOriginalError(a) == errors.GetOriginalError(b)
 
 Checks if two errors have the same error message
 
-**example:**
-
-```go
-err := service.MakeHttpRequest()
-if err != nil {
-  return errors.W
-}
-```
+**example**
 
 ```go
 errA := ...
