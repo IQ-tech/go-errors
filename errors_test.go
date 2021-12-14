@@ -148,3 +148,21 @@ func TestEquals(t *testing.T) {
 		assert.Equal(t, tt.expected, actual)
 	}
 }
+
+func TestWrapf(t *testing.T) {
+	t.Parallel()
+
+	t.Run("when error is nil", func(t *testing.T) {
+		t.Run("returns nil", func(t *testing.T) {
+			actual := Wrapf(nil, "%s", "test")
+			assert.Equal(t, nil, actual)
+		})
+	})
+
+	t.Run("when error is not nil", func(t *testing.T) {
+		t.Run("adds formatted string to wrapped error messages", func(t *testing.T) {
+			actual := Wrapf(New("oops"), "%s %d", "test", 1)
+			assert.Equal(t, "go-errors.TestWrapf.func2.1: test 1;  ➡︎ oops", actual.Error())
+		})
+	})
+}

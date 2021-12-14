@@ -3,6 +3,7 @@ package errors
 
 import (
 	stderrors "errors"
+	"fmt"
 	"runtime"
 	"strings"
 )
@@ -14,6 +15,10 @@ func New(message string) error {
 // Wrap wraps an error with a context message and adds execution path
 func Wrap(err error, messages ...string) error {
 	return wrap(err, 4, messages...)
+}
+
+func Wrapf(err error, format string, args ...interface{}) error {
+	return wrap(err, 4, fmt.Sprintf(format, args...))
 }
 
 // Wrap wraps an error with a context message and adds execution path
