@@ -2,9 +2,14 @@
 package errors
 
 import (
+	stderrors "errors"
 	"runtime"
 	"strings"
 )
+
+func New(message string) error {
+	return stderrors.New(message)
+}
 
 // Wrap wraps an error with a context message and adds execution path
 func Wrap(err error, messages ...string) error {
@@ -37,14 +42,39 @@ func GetOriginalError(err error) error {
 
 // getCallerFunction returns the name of a method in the method chain
 // indicated by the stackOrder index from last to first
-func getCallerFunction(stackOrder int) string {
+func getCallerFunction(skip int) string {
 	// get caller function path
-	pc := make([]uintptr, 1)
-	runtime.Callers(stackOrder, pc)
+	pc := make([]uintptr, 15)
+	n := runtime.Callers(skip, pc)
+	frames := runtime.CallersFrames(pc[:n])
+	frame, _ := frames.Next()
+	path := strings.Split(frame.Function, "/")
 
-	funcRef := runtime.FuncForPC(pc[0])
+	return path[len(path)-1]
+}
 
-	funcPath := strings.Split(funcRef.Name(), "/")
+// Returns true when two errors at the same.
+//
+// err := errors.New("oops")
+// errors.Is(err, err) => true
+//
+// err2 = errors.New("oops")
+// errors.Is(err, err2) => false
+func Is(a, b error) bool {
+	return GetOriginalError(a) == GetOriginalError((b))
+}
 
-	return funcPath[len(funcPath)-1]
+// Returns true when two errors have the same error message.
+//
+// err := errors.New("oops")
+// errors.Equals(err, err) => true
+//
+// err2 := errors.New("oops...")
+// errors.Equals(err, err2) => false
+func Equals(a, b error) bool {
+	if a == nil || b == nil {
+		return Is(a, b)
+	}
+
+	return GetOriginalError(a).Error() == GetOriginalError(b).Error()
 }
