@@ -100,14 +100,7 @@ Same as `Wrap` but accepts a format string
 ```go
 response := service.MakeHttpRequest()
 if response.StatusCode != http.StatusOK {
-  return errors.Wrapf(`
-    unexpected http response status.
-    expected: %d
-    got: %d
-  `,
-    http.StatusOK,
-    response.StatusCode,
-  )
+  return errors.Wrapf("unexpected http response status. expected %d but got %d", http.StatusOK, response.StatusCode)
 }
 ```
 
